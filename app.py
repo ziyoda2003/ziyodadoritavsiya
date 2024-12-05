@@ -6,6 +6,7 @@ import numpy as np
 with open("Dorimodel.pkl", "rb") as f:
     model = pickle.load(f)
 
+# Streamlit interface
 st.title("Dori Tavsiya Qilish Tizimi")
 
 # Input form
@@ -23,9 +24,12 @@ cholesterol_map = {"NORMAL": 0, "HIGH": 1}
 
 # Prepare features for prediction
 features = np.array([[age, sex_map[sex], bp_map[bp], cholesterol_map[cholesterol], na_to_k]])
-predicted_drug = model.predict(features)
 
-# Map prediction to drug name
-drug_map = {0: "drugA", 1: "drugB", 2: "drugC", 3: "drugX", 4: "drugY"}
-predicted_drug_category = int(round(predicted_drug[0]))  # Convert float to nearest integer
-st.subheader(f"Tavsiya etilgan dori: {drug_map[predicted_drug_category]}")
+# Predict on button click
+if st.button("Natijani ko'rish"):
+    predicted_drug = model.predict(features)
+
+    # Map prediction to drug name
+    drug_map = {0: "drugA", 1: "drugB", 2: "drugC", 3: "drugX", 4: "drugY"}
+    predicted_drug_category = int(predicted_drug[0])  # Floatni int ga o‘tkazish
+    st.subheader(f"Tavsiya etilgan dori: {drug_map[predicted_drug_category]}")
