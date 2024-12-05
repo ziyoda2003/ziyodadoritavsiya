@@ -11,9 +11,9 @@ st.title("Dori Tavsiya Qilish Tizimi")
 # Input form
 st.header("Bemorning parametrlarini kiriting")
 age = st.number_input("Yoshi", min_value=10, max_value=80, step=1)
-sex = st.selectbox("Jinsi", options=["M", "F"])
-bp = st.selectbox("Qon bosimi (BP)", options=["LOW", "NORMAL", "HIGH"])
-cholesterol = st.selectbox("Xolesterin darajasi", options=["NORMAL", "HIGH"])
+sex = st.selectbox("Jinsi", options=["Erkak", "Ayol"])
+bp = st.selectbox("Qon bosimi (BP)", options=["Past", "NORMAL", "YUQORI"])
+cholesterol = st.selectbox("Xolesterin darajasi", options=["NORMAL", "BALAND"])
 na_to_k = st.number_input("Natriy va kaliy nisbati", min_value=6.0, max_value=40.0, step=0.1)
 
 # Map categorical inputs to numeric
