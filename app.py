@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 
 # Load the model
-with open("Dorimodel.pkl", "rb") as f:
+with open("Dorimodel2.pkl", "rb") as f:
     model = pickle.load(f)
 
 # Streamlit interface
