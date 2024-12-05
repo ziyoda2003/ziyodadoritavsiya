@@ -15,7 +15,7 @@ age = st.number_input("Yoshi", min_value=10, max_value=80, step=1)
 sex = st.selectbox("Jinsi", options=["M", "F"])
 
 # BP qiymatlari uchun slayder
-bp = st.slider("Qon bosimi (BP)", min_value=0, max_value=2, step=1)
+bp = st.slider("Qon bosimi (BP)", min_value=0, max_value=2, step=0.1)
 bp_map = {0: "LOW", 1: "NORMAL", 2: "HIGH"}
 st.write(f"Tanlangan BP: {bp_map[bp]}")  # Slayder qiymatini matn ko'rinishida chiqarish
 
