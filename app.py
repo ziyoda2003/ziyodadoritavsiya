@@ -1,65 +1,31 @@
 import streamlit as st
 import pickle
-import pandas as pd
+import numpy as np
 
-                                        ## To Add External CSS ##
-with open('css/style.css') as f:
-     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+# Load the model
+with open("Dorimodel.pkl", "rb") as f:
+    model = pickle.load(f)
 
+st.title("Dori Tavsiya Qilish Tizimi")
 
+# Input form
+st.header("Bemorning parametrlarini kiriting")
+age = st.number_input("Yoshi", min_value=10, max_value=80, step=1)
+sex = st.selectbox("Jinsi", options=["M", "F"])
+bp = st.selectbox("Qon bosimi (BP)", options=["LOW", "NORMAL", "HIGH"])
+cholesterol = st.selectbox("Xolesterin darajasi", options=["NORMAL", "HIGH"])
+na_to_k = st.number_input("Natriy va kaliy nisbati", min_value=6.0, max_value=40.0, step=0.1)
 
+# Map categorical inputs to numeric
+sex_map = {"M": 0, "F": 1}
+bp_map = {"LOW": 0, "NORMAL": 1, "HIGH": 2}
+cholesterol_map = {"NORMAL": 0, "HIGH": 1}
 
-                                        ## Application Backend ##
+# Prepare features for prediction
+features = np.array([[age, sex_map[sex], bp_map[bp], cholesterol_map[cholesterol], na_to_k]])
+predicted_drug = model.predict(features)
 
-                    # To load medicine-dataframe from pickle in the form of dictionary
-medicines_dict = pickle.load(open('medicine_dict.pkl','rb'))
-medicines = pd.DataFrame(medicines_dict)
-
-                    # To load similarity-vector-data from pickle in the form of dictionary
-similarity = pickle.load(open('similarity.pkl','rb'))
-
-def recommend(medicine):
-     medicine_index = medicines[medicines['Drug_Name'] == medicine].index[0]
-     distances = similarity[medicine_index]
-     medicines_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:6]
-
-     recommended_medicines = []
-     for i in medicines_list:
-         recommended_medicines.append(medicines.iloc[i[0]].Drug_Name)
-     return recommended_medicines
-
-
-
-
-
-                                    ## Appliaction Frontend ##
-
-                                   # Title of the Application
-st.title('Dori tavsiya qilish tizimi')
-
-                                        # Searchbox
-selected_medicine_name = st.selectbox(
-'muqobilligi tavsiya qilinadigan dori nomini yozing',
-     medicines['Drug_Name'].values)
-
-
-                                   # Recommendation Program
-if st.button('Dori tavsiya qilish'):
-     recommendations = recommend(selected_medicine_name)
-     j=1
-     for i in recommendations:
-          st.write(j,i)                      # Recommended-drug-name
-          # st.write("Click here -> "+" https://www.netmeds.com/catalogsearch/result?q="+i) # Recommnded drug purchase link from netmeds
-          st.write("Click here -> "+" https://pharmeasy.in/search/all?name="+i) # Recommnded-drug purchase link from pharmeasy
-          j+=1
-
-
-
-                                         ## Image load ##
-from PIL import Image
-image = Image.open('images/medicine-image.jpg')
-st.image(image, caption='Recommended Medicines')
-
-
-
-
+# Map prediction to drug name
+drug_map = {0: "drugA", 1: "drugB", 2: "drugC", 3: "drugX", 4: "drugY"}
+predicted_drug_category = int(round(predicted_drug[0]))  # Convert float to nearest integer
+st.subheader(f"Tavsiya etilgan dori: {drug_map[predicted_drug_category]}")
